@@ -3,44 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using black_jack.Enums;
+using BlackJack.Enums;
 
-namespace black_jack
+namespace BlackJack
 {
-    class Deck : IDeck
+    class Deck
     {
-        private List<Card> deck;
+        private List<Card> _deck;
 
         public Deck()
         {   
-            deck = new List<Card>();
-            OnNewGame();
+            _deck = new List<Card>();
+            Reset();
         }
             
 
         public Card GetCard()
         {
-
             int index;
             Card buffCard;
             Random random = new Random();
-            index = random.Next(deck.Count);
-//            Console.WriteLine("\n" + index.ToString() + " in " + deck.Count.ToString() + "\n");
-            buffCard = deck[index];
-            deck.RemoveAt(index);
+            index = random.Next(_deck.Count);
+//            UserIO.ShowToUser("\n" + index.ToString() + " in " + _deck.Count.ToString() + "\n");
+            buffCard = _deck[index];
+            _deck.RemoveAt(index);
             return buffCard;
         }
 
         public void Reset()
         {
-            deck.Clear();
+            _deck.Clear();
             int suitsCount = Enum.GetValues(typeof(CardSuit)).Length;
             Array cardNameValue = Enum.GetValues(typeof(CardName));
             for (int i = 0; i < suitsCount; i++)
             {
                 for (int j = 0; j < cardNameValue.Length; j++)
                 {
-                    deck.Add(new Card((CardName)cardNameValue.GetValue(j), (CardSuit)i));
+                    _deck.Add(new Card((CardName)cardNameValue.GetValue(j), (CardSuit)i));
                 }
             }
         }

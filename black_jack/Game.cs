@@ -5,167 +5,188 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace black_jack
+namespace BlackJack
 {
     class Game
     {
-        const int maxScore = 21;
-        private IPlayer dealer;
-        private IPlayer human;
-        private IDeck deck;
+        private const int _maxScore = 21;
+        private Player _dealer;
+        private Player _human;
+        private Deck _deck;
 
         public Game()
         {
-            deck = new Deck();
-            dealer = new Player(deck, "Dealer");
-            human = new Player(deck);
-            Console.WriteLine("Welcome to Black Jack");
+            _deck = new Deck();
+            _dealer = new Player(_deck, "Dealer");
+            _human = new Player(_deck);
+            UserIO.ShowToUser("Welcome to Black Jack");
+            GameCycle();
         }
 
         public Game(string _humanName)
         {
             if (_humanName == "my name is Neo")
             {
-                deck = new Deck();
-                dealer = new Player(deck, "mst Smit");
-                human = new Player(deck, "Neo");
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Wake up, Neo");
-
+                _deck = new Deck();
+                _dealer = new Player(_deck, "mst Smit");
+                _human = new Player(_deck, "Neo");
+                UserIO.MatrixEnable();
             }
+
             else
             {
-                deck = new Deck();
-                dealer = new Player(deck, "Dealer");
-                human = new Player(deck, _humanName);
+                _deck = new Deck();
+                _dealer = new Player(_deck, "Dealer");
+                _human = new Player(_deck, _humanName);
             }
-            Console.WriteLine("Welcome to Black Jack");
+            UserIO.ShowToUser("Welcome to Black Jack");
             GameCycle();
         }
 
         private void GameCycle() 
         {
             bool humanTurn = true;
-
-            while (humanTurn) // player turn cycle
+            string input;
+            Random random = new Random();
+            while (true)
             {
-                human.ShowHand();
-
-                if (human.Score > maxScore)
+                if(humanTurn)
                 {
-                    Console.WriteLine("You loose");
-                    OnGameEnd();
-                    break;
-                }
-
-                else if(human.Score  == maxScore)
-                {
-                    Console.WriteLine("You win");
-                    OnGameEnd();
-                    break;
-                }
-
-                bool rightChoise = false;
-
-                while (!rightChoise)
-                {
-                    rightChoise = true;
-                    Console.WriteLine("\nWhat do you want to do? \n1 - Ask Card \n2 - Enough");
-                    
-                    switch (Console.ReadLine())
+                    _human.ShowHand();
+                    if (CheckForWinner(_human))
                     {
-                        case "1":
-                            human.AskCard();
+                        return;
+                    }
+
+                    while (true)
+                    {
+                        UserIO.ShowToUser("\nWhat do you want to do? \n1 - Ask Card \n2 - Enough");
+                        input = UserIO.GetInput();
+                        
+                        if (input == "1")
+                        {
+                            _human.AskCard();
                             break;
-                        case "2":
+                        }
+
+                        if (input == "2")
+                        {
                             humanTurn = false;
                             break;
-                        default:
-                            rightChoise = false;
-                            break;
+                        }
+                        UserIO.ShowToUser("\nInvalid input. Please try again");
+                        _human.ShowHand();
                     }
                 }
-            }
 
-            while (!humanTurn) //AI turn cycle
-            {
-                Random random = new Random();
-
-                if (maxScore - dealer.Score > 10 || random.NextDouble() < (double)dealer.Score / (double)maxScore)
-                    dealer.AskCard();
-
-                else
+                if (!humanTurn)
                 {
-                    dealer.ShowHand();
-
-                    if (dealer.Score > human.Score)
+                    if (_maxScore - _dealer.Score > 11 || random.NextDouble() < ((double)_dealer.Score - 11) / ((double)_maxScore -11))
                     {
-                        Console.WriteLine("You loose");
-                        OnGameEnd();
-                        break;
-                    }
-
-                    else if (dealer.Score == human.Score)
-                    {
-                        Console.WriteLine("There is no winner");
-                        OnGameEnd();
-                        break;
+                        _dealer.AskCard();
+                        if (CheckForWinner(_dealer))
+                        {
+                            return;
+                        }
                     }
 
                     else
                     {
-                        Console.WriteLine("You win");
-                        OnGameEnd();
-                        break;
+                        FinalWinnerCheck(_dealer, _human);
                     }
-                }
-
-                if (dealer.Score > maxScore)
-                {
-                    dealer.ShowHand();
-                    Console.WriteLine("You win");
-                    OnGameEnd();
-                    break;
-                }
-
-                else if (dealer.Score == maxScore)
-                {
-                    Console.WriteLine("You win");
-                    OnGameEnd();
-                    break;
                 }
             }
         }
 
+        private bool CheckForWinner(Player player)
+        {
+            bool findWinner = false;
+
+            if (player.Score > _maxScore)
+            {
+                findWinner = true;
+                player.IsWinner = false;
+            }
+
+            if (player.Score == _maxScore)
+            {
+                findWinner = true;
+                player.IsWinner = true;
+            }
+
+            if(findWinner)
+            {
+                HaveWinner();
+            }
+            
+
+            return findWinner;
+        }
+
+        private void FinalWinnerCheck(Player player1,Player player2)
+        {
+            if (player1.Score > player2.Score )
+            {
+                player1.IsWinner = true;
+            }
+
+            if (player1.Score < player2.Score)
+            {
+                player2.IsWinner = true;
+            }
+
+            if (player1.Score == player2.Score)
+            {
+                player1.ShowHand();
+                player2.ShowHand();
+                UserIO.ShowToUser("\nThere is no winner");
+
+                OnGameEnd();
+                return;
+            }
+            HaveWinner();
+        }
+
+        private void HaveWinner()
+        {
+            _dealer.ShowHand();
+            if (_human.IsWinner == false || _dealer.IsWinner == true)
+            {
+                UserIO.ShowToUser("You loose");
+            }
+
+            if (_dealer.IsWinner == false || _human.IsWinner == true)
+            {
+                UserIO.ShowToUser("You win");
+            }
+
+            OnGameEnd();
+        }
+    
         private void OnGameEnd()
         {
-            bool rightChoise = false;
+            string input;
 
-            while (!rightChoise)
+            while (true)
             {
-                rightChoise = true;
-                Console.WriteLine("\nEnter 1 to play again \nEnter 2 to exit");
-
-                switch (Console.ReadLine())
-                {
-                    case "1": // reset deck and players for new game
-                        deck.Reset(); 
-                        dealer.Reset();
-                        human.Reset();
-                        Console.Clear();
+                UserIO.ShowToUser("\nWhat do you want now? \nEnter 1 to play again\nEnter 2 to exit");
+                input = Console.ReadLine();
+                    if(input == "1") // reset _deck and players for new game
+                    {
+                        _deck.Reset(); 
+                        _dealer.Reset();
+                        _human.Reset();
+                        UserIO.ClearDisplay();
                         GameCycle();
                         break;
+                    }
 
-                    case "2":
+                    if(input == "2")
+                    {
                         Environment.Exit(0);
                         break;
-
-                    default:
-                        rightChoise = false;
-                        Console.WriteLine("Invalid input");
-                        break;
-                }
+                    }
+                    UserIO.ShowToUser("Invalid input");
             }
         }
     }

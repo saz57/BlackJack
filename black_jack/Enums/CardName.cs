@@ -1,4 +1,4 @@
-﻿namespace black_jack.Enums
+﻿namespace BlackJack.Enums
 {
     public enum CardName
     {

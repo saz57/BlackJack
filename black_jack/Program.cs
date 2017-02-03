@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace black_jack
+namespace BlackJack
 {
     class Program
     {
         static void Main(string[] args)
         {
             
-            Console.WriteLine("Hello. What is your name?");
+            UserIO.ShowToUser("Hello. What is your name?");
             string name = Console.ReadLine();
             Game game = new Game(name);
         }

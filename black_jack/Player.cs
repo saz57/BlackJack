@@ -4,45 +4,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace black_jack
+namespace BlackJack
 {
-    class Player : IPlayer
+    class Player
     {
-        private string name;
-        private List<Card> hand;
-        private IDeck gameDeck;
+        private List<Card> _hand;
+        private Deck _gameDeck;
+
+        public bool? IsWinner { get; set;} 
+        public string Name {get; private set; }
         public int Score { get; private set; }
 
-        public Player(IDeck _deck, string _name = "Player")
+        public Player(Deck deck, string name = "Player")
         {
-            name = _name;
-            gameDeck = _deck;
-            hand = new List<Card>();
+            Name = name;
+            IsWinner = null;
+            _gameDeck = deck;
+            _hand = new List<Card>();
             Score = 0;
             AskCard();
         }
 
-
         public void AskCard()
         {
-            hand.Add(gameDeck.GetCard());
-            Score += (int)hand.Last<Card>().Name;
+            _hand.Add(_gameDeck.GetCard());
+            Score += (int)_hand.Last<Card>().Name;
         }
 
         public void ShowHand()
         {
-            Console.WriteLine("\n" + name + " have in hand:");
-            foreach (Card _card in hand)
+            UserIO.ShowToUser("\n" + Name + " have in hand:");
+            foreach (Card card in _hand)
             {
-                Console.WriteLine(_card.ToString());
+                UserIO.ShowToUser(card.ToString());
             }
-            Console.WriteLine("\nTotal score is: " + Score.ToString());
+
+            UserIO.ShowToUser("\nTotal score is: " + Score.ToString());
         }
 
         public void Reset()
         {
             Score = 0;
-            hand.Clear();
+            IsWinner = null;
+            _hand.Clear();
             AskCard();
         }
     }

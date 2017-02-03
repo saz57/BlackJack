@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using black_jack.Enums;
+using BlackJack.Enums;
 
-namespace black_jack
+namespace BlackJack
 {
     struct Card
     {
