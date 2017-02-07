@@ -16,32 +16,27 @@ namespace BlackJack
 
         public Game()
         {
+            UserIO.ShowToUser("Hello. What is your name?");
+            string humanName = UserIO.GetInput();
             _deck = new Deck();
-            _dealer = new Player(_deck, "Dealer");
-            _human = new Player(_deck);
-            UserIO.ShowToUser("Welcome to Black Jack");
-            GameCycle();
-        }
 
-        public Game(string _humanName)
-        {
-            if (_humanName == "my name is Neo")
-            {
-                _deck = new Deck();
+            if (humanName == "my name is Neo")
+            { 
                 _dealer = new Player(_deck, "mst Smit");
                 _human = new Player(_deck, "Neo");
                 UserIO.MatrixEnable();
             }
 
-            else
+            if (humanName != "my name is Neo")
             {
-                _deck = new Deck();
                 _dealer = new Player(_deck, "Dealer");
-                _human = new Player(_deck, _humanName);
+                _human = new Player(_deck, humanName);
             }
+
             UserIO.ShowToUser("Welcome to Black Jack");
             GameCycle();
         }
+
 
         private void GameCycle() 
         {
@@ -81,7 +76,8 @@ namespace BlackJack
 
                 if (!humanTurn)
                 {
-                    if (_maxScore - _dealer.Score > 11 || random.NextDouble() < ((double)_dealer.Score - 11) / ((double)_maxScore -11))
+                    double rand = random.NextDouble();
+                    if (_maxScore - _dealer.Score >= 11 || rand <= ((double)_dealer.Score - 11) / ((double)_maxScore -11))
                     {
                         _dealer.AskCard();
                         if (CheckForWinner(_dealer))
@@ -90,7 +86,7 @@ namespace BlackJack
                         }
                     }
 
-                    else
+                    if (_maxScore - _dealer.Score < 11 && rand > ((double)_dealer.Score - 11) / ((double)_maxScore - 11))
                     {
                         FinalWinnerCheck(_dealer, _human);
                     }
@@ -170,7 +166,7 @@ namespace BlackJack
             while (true)
             {
                 UserIO.ShowToUser("\nWhat do you want now? \nEnter 1 to play again\nEnter 2 to exit");
-                input = Console.ReadLine();
+                input = UserIO.GetInput();
                     if(input == "1") // reset _deck and players for new game
                     {
                         _deck.Reset(); 

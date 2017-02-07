@@ -10,10 +10,7 @@ namespace BlackJack
     {
         static void Main(string[] args)
         {
-            
-            UserIO.ShowToUser("Hello. What is your name?");
-            string name = Console.ReadLine();
-            Game game = new Game(name);
+            Game game = new Game();
         }
     }
 }
