@@ -3,13 +3,13 @@
     public enum CardName
     {
         ace = 1,
-        jack = 2,
-        queen = 3,
-        king = 4,
+        jack,
+        queen,
+        king,
         six = 6,
-        seven = 7,
-        eigh = 8,
-        nine = 9,
-        ten = 10
+        seven,
+        eigh,
+        nine,
+        ten
     };
 }

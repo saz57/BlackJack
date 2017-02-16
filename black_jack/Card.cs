@@ -7,20 +7,9 @@ using BlackJack.Enums;
 
 namespace BlackJack
 {
-    struct Card
+    internal class Card
     {
         public CardName Name {get; set;}
         public CardSuit Suit { get; set; }
-
-        public Card(CardName _name, CardSuit _suit) : this()
-        {
-            Name = _name;
-            Suit = _suit;
-        }
-
-        public override string ToString()
-        {
-            return Name.ToString() + " " + Suit.ToString();
-        }
     }
 }

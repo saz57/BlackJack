@@ -1,0 +1,2 @@
+$ cat .gitignore
+black_jack/bin/
