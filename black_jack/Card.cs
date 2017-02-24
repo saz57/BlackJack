@@ -9,7 +9,8 @@ namespace BlackJack
 {
     internal class Card
     {
+        public int Score { get; set;}
         public CardName Name {get; set;}
-        public CardSuit Suit { get; set; }
+        public CardSuit Suit { get; set;}
     }
 }

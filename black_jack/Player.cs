@@ -26,7 +26,7 @@ namespace BlackJack
         public void AskCard()
         {
             _hand.Add(_gameDeck.GetCard());
-            Score += (int)_hand.Last<Card>().Name;
+            Score += _hand.Last<Card>().Score;
         }
 
         public void ShowHand()

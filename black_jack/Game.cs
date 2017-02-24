@@ -21,7 +21,7 @@ namespace BlackJack
             string humanName = UserIO.GetPlayerName();
             _deck = new Deck();
 
-            if (humanName == "my name is Neo") // Check for spetial name
+            if (humanName == "my name is Neo")
             { 
                 _dealer = new Player(_deck, "mrs Smit");
                 _human = new Player(_deck, "Neo");
@@ -54,17 +54,17 @@ namespace BlackJack
                         return;
                     }
 
-                    while (true) // Player input
+                    while (true)
                     {
                         input = UserIO.OnGameInput(gameStatus);
                         
-                        if (input == 1) // Ask Card
+                        if (input == 1)
                         {
                             _human.AskCard();
                             break;
                         }
 
-                        if (input == 2) // Enough
+                        if (input == 2)
                         {
                             humanTurn = false;
                             break;
@@ -74,7 +74,7 @@ namespace BlackJack
                     }
                 }
 
-                if (!humanTurn) //AI logic
+                if (!humanTurn)
                 {
                     double rand = random.NextDouble();
 
@@ -99,7 +99,7 @@ namespace BlackJack
             }
         }
 
-        private bool CheckForWinner(Player player1, Player player2) // For find where game must be stoped its must return bool in my view
+        private bool CheckForWinner(Player player1, Player player2)
         {
             bool findWinner = false;
             Player winner = null;
@@ -152,7 +152,7 @@ namespace BlackJack
             return findWinner;
         }
     
-        private void OnGameEnd() // When winner is found and GameCycle is end
+        private void OnGameEnd()
         {
             int input;
 
@@ -160,7 +160,7 @@ namespace BlackJack
             {
                 input = UserIO.OnGameInput(gameStatus);
 
-                    if(input == 1) // reset _deck and players for new game
+                    if(input == 1)
                     {
                         _deck.Reset(); 
                         _dealer.Reset();
@@ -169,7 +169,7 @@ namespace BlackJack
                         break;
                     }
 
-                    if(input == 2) //exit from application
+                    if(input == 2)
                     {
                         Environment.Exit(0);
                         break;

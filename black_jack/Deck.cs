@@ -9,15 +9,36 @@ namespace BlackJack
 {
     internal class Deck
     {
-        public int MaxCardInDeck { get; private set; } // for the AI logic
+        public int MaxCardInDeck { get; private set; }
+        private int _lastImagedCardIndex;
+        private int _imageCardScoreOffset;
+        private int _valueCardScoreOffset;
+        private uint _mixIterations;
         private List<Card> _deck;
+        private Dictionary<CardName, int> _cardNameToScore;
 
         public Deck()
-        {   
+        {
+            _lastImagedCardIndex = 3;
+            _imageCardScoreOffset = 1;
+            _valueCardScoreOffset = 2;
+            _mixIterations = 50;
+
+            _cardNameToScore = new Dictionary<CardName, int>();
             _deck = new List<Card>();
+
+            for (int i = 0; i < _lastImagedCardIndex + 1; i++)
+            {
+                _cardNameToScore.Add((CardName)i, i + _imageCardScoreOffset);
+            }
+
+            for (int i = _lastImagedCardIndex + 1; i < Enum.GetValues(typeof(CardName)).Length; i++)
+            {
+                _cardNameToScore.Add((CardName)i, i + _valueCardScoreOffset);
+            }
             Reset();
         }
-            
+
 
         public Card GetCard()
         {
@@ -32,27 +53,26 @@ namespace BlackJack
             _deck.Clear();
             int maxCard = 0;
             int suitsCount = Enum.GetValues(typeof(CardSuit)).Length;
-            Array cardNameValue = Enum.GetValues(typeof(CardName)); // fix - Change Array to something I don't now for what i can change Array,
-                                                                    //because Enum.GetValues() return Array 
            
             for (int i = 0; i < suitsCount; i++)
             {
-                for (int j = 0; j < cardNameValue.Length; j++)
+                for (int j = 0; j < _cardNameToScore.Count; j++)
                 {
                     Card card = new Card();
-                    card.Name = (CardName) cardNameValue.GetValue(j);
+                    card.Name = (CardName) j;
                     card.Suit = (CardSuit) i;
-                    
-                    if(maxCard < (int)card.Name)
+                    card.Score = _cardNameToScore[(CardName)j];
+
+                    if (maxCard < _cardNameToScore[(CardName)j])
                     {
-                        maxCard = (int)card.Name;
+                        maxCard = _cardNameToScore[(CardName)j];
                     }
 
                     _deck.Add(card);
                 }
             }
             MaxCardInDeck = maxCard;
-            MixCards(50);
+            MixCards(_mixIterations);
         }
 
         private void MixCards(uint iterations)
